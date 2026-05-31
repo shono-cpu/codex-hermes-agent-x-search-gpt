@@ -1,0 +1,41 @@
+[
+  {
+    "id": "sample-001",
+    "entity": "founder",
+    "profile": "personal",
+    "purpose": "style",
+    "url": "https://x.com/sample/status/001",
+    "created_at": "2026-05-18T08:10:00+09:00",
+    "text": "CodexからHermes Agentを呼び出してx_searchを使えるようになると、直近ポスト取得→要約→インフォグラフィックプロンプト化→画像生成まで一発で回せる。これはかなり遊べる。",
+    "metrics": {
+      "likes": 180,
+      "reposts": 22
+    }
+  },
+  {
+    "id": "sample-002",
+    "entity": "founder",
+    "profile": "personal",
+    "purpose": "style",
+    "url": "https://x.com/sample/status/002",
+    "created_at": "2026-05-18T09:25:00+09:00",
+    "text": "ChatGPT PlusとX Premiumの組み合わせ、月額サブスク内で高性能AI検索と制作をつなげられるのが強い。ナレッジ収集を自動化したら制作速度がかなり変わりそう。",
+    "metrics": {
+      "likes": 210,
+      "reposts": 31
+    }
+  },
+  {
+    "id": "sample-003",
+    "entity": "founder",
+    "profile": "personal",
+    "purpose": "creative",
+    "url": "https://x.com/sample/status/003",
+    "created_at": "2026-05-18T11:40:00+09:00",
+    "text": "指定アカウントのポストを自動取得して、要点・文体・言い回しをストックする。そこから記事、スライド、画像プロンプトに展開できるツールを作りたい。",
+    "metrics": {
+      "likes": 156,
+      "reposts": 18
+    }
+  }
+]

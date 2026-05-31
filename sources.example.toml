@@ -1,0 +1,56 @@
+[[sources]]
+name = "Personal X"
+provider = "hermes_x"
+source = "@yuusaku_buddica"
+url = "https://x.com/yuusaku_buddica"
+platform = "x"
+kind = "post"
+entity = "nakano-yusaku"
+profile = "personal"
+purpose = "style"
+limit = 30
+
+[[sources]]
+name = "Company X"
+provider = "hermes_x"
+source = "@TheNeutral_of"
+url = "https://x.com/TheNeutral_of"
+platform = "x"
+kind = "post"
+entity = "the-neutral"
+profile = "company"
+purpose = "research"
+limit = 30
+
+[[sources]]
+name = "Personal YouTube"
+provider = "youtube"
+source = "@yuusaku_buddica"
+url = "https://www.youtube.com/@yuusaku_buddica"
+platform = "youtube"
+kind = "video"
+entity = "nakano-yusaku"
+profile = "personal"
+purpose = "style"
+limit = 20
+
+[[sources]]
+name = "Company YouTube"
+provider = "youtube"
+source = "@BUDDICA-nakanokun"
+url = "https://www.youtube.com/@BUDDICA-nakanokun"
+platform = "youtube"
+kind = "video"
+entity = "buddica"
+profile = "company"
+purpose = "creative"
+limit = 20
+
+[[sources]]
+name = "Local mixed media sample"
+provider = "json"
+file = "examples/mixed_media_items.json"
+source = "Sample AI Channel"
+entity = "sample-company"
+profile = "company"
+purpose = "creative"

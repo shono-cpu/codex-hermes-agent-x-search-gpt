@@ -1,0 +1,38 @@
+[[sources]]
+name = "@sample"
+provider = "hermes_x"
+entity = "founder"
+profile = "personal"
+purpose = "style"
+platform = "x"
+limit = 30
+description = "AI制作ワークフロー、文体、言い回しの収集"
+
+[[sources]]
+name = "Sample AI Channel"
+provider = "youtube"
+entity = "sample-company"
+profile = "company"
+purpose = "creative"
+platform = "youtube"
+limit = 20
+description = "動画タイトル、概要、台本構成、伸びた企画の収集"
+
+[[sources]]
+name = "Sample AI Channel"
+provider = "local"
+entity = "sample-company"
+profile = "company"
+purpose = "creative"
+platform = "local"
+limit = 50
+description = "自分で作ったプロンプト、画像、記事、スライドの制作ログ"
+
+[[outputs]]
+type = "report"
+path = "outputs/{source}_report.md"
+
+[[outputs]]
+type = "prompt"
+asset = "infographic"
+path = "outputs/{source}_infographic_prompt.md"

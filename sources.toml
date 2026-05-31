@@ -1,0 +1,110 @@
+[[sources]]
+name = "中野優作 X"
+provider = "hermes_x"
+source = "@yuusaku_buddica"
+url = "https://x.com/yuusaku_buddica"
+platform = "x"
+kind = "post"
+entity = "nakano-yusaku"
+profile = "personal"
+purpose = "style"
+limit = 50
+min_chars = 300
+
+[[sources]]
+name = "中野優作 X 長文"
+provider = "hermes_x"
+source = "@yuusaku_buddica"
+url = "https://x.com/yuusaku_buddica"
+platform = "x"
+kind = "post"
+entity = "nakano-yusaku"
+profile = "personal"
+purpose = "style_longform"
+limit = 1000
+min_chars = 300
+
+[[sources]]
+name = "The Neutral X"
+provider = "hermes_x"
+source = "@TheNeutral_of"
+url = "https://x.com/TheNeutral_of"
+platform = "x"
+kind = "post"
+entity = "the-neutral"
+profile = "company"
+purpose = "research"
+limit = 50
+min_chars = 300
+
+[[sources]]
+name = "The Neutral X 長文"
+provider = "hermes_x"
+source = "@TheNeutral_of"
+url = "https://x.com/TheNeutral_of"
+platform = "x"
+kind = "post"
+entity = "the-neutral"
+profile = "company"
+purpose = "style_longform"
+limit = 1000
+min_chars = 300
+
+[[sources]]
+name = "中野優作 YouTube"
+provider = "youtube"
+source = "@yuusaku_buddica"
+url = "https://www.youtube.com/@yuusaku_buddica"
+platform = "youtube"
+kind = "video"
+entity = "nakano-yusaku"
+profile = "personal"
+purpose = "style"
+limit = 30
+
+[[sources]]
+name = "BUDDICA 中野くん YouTube"
+provider = "youtube"
+source = "@BUDDICA-nakanokun"
+url = "https://www.youtube.com/@BUDDICA-nakanokun"
+platform = "youtube"
+kind = "video"
+entity = "buddica"
+profile = "company"
+purpose = "creative"
+limit = 30
+
+[[sources]]
+name = "The Neutral YouTube"
+provider = "youtube"
+source = "@TheNeutral-official"
+url = "https://www.youtube.com/@TheNeutral-official"
+platform = "youtube"
+kind = "video"
+entity = "the-neutral"
+profile = "company"
+purpose = "creative"
+limit = 30
+
+[[sources]]
+name = "BUDDICA PHOENIX PRO YouTube"
+provider = "youtube"
+source = "@buddica_phoenix_pro"
+url = "https://www.youtube.com/@buddica_phoenix_pro"
+platform = "youtube"
+kind = "video"
+entity = "buddica-phoenix-pro"
+profile = "company"
+purpose = "creative"
+limit = 30
+
+[[sources]]
+name = "成長以外全て死"
+provider = "local_file"
+source = "成長以外全て死"
+file = "/Users/shonomasaki/Library/Mobile Documents/com~apple~CloudDocs/成長以外全て死_全テキスト.docx"
+platform = "local"
+kind = "book"
+entity = "nakano-yusaku"
+profile = "personal"
+purpose = "style"

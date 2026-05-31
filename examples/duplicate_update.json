@@ -1,0 +1,18 @@
+[
+  {
+    "id": "sample-002-newer",
+    "entity": "founder",
+    "profile": "personal",
+    "purpose": "style",
+    "platform": "x",
+    "kind": "post",
+    "source": "@sample",
+    "url": "https://x.com/sample/status/002",
+    "created_at": "2026-05-18T10:25:00+09:00",
+    "text": "ChatGPT PlusとX Premiumの組み合わせ、月額サブスク内で高性能AI検索と制作をつなげられるのが強い。更新版として、ナレッジ収集から制作物出力まで用途別に分けるとさらに使いやすい。",
+    "metrics": {
+      "likes": 260,
+      "reposts": 40
+    }
+  }
+]

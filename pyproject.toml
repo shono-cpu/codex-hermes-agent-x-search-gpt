@@ -1,0 +1,12 @@
+[project]
+name = "nakano-yusaku-bot"
+version = "0.1.0"
+description = "Local workflow for 中野優作bot: collecting media knowledge and generating creative prompts."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+xkw = "x_knowledge.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

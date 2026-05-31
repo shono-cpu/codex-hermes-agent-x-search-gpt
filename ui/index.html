@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>中野優作bot</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>中野優作bot</h1>
+        <p id="statusText">監視対象を読み込み中</p>
+        <p id="modelText">モデル設定を確認中</p>
+      </div>
+      <div class="actions">
+        <button id="reloadBtn" title="再読み込み">↻</button>
+        <button id="saveBtn" class="primary">保存</button>
+        <button id="crawlBtn">クロール</button>
+        <button id="exportBtn">出力</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="tablePane">
+        <div class="toolbar">
+          <div class="filters">
+            <select id="profileFilter">
+              <option value="">全区分</option>
+              <option value="personal">個人</option>
+              <option value="company">会社</option>
+            </select>
+            <select id="platformFilter">
+              <option value="">全媒体</option>
+              <option value="x">X</option>
+              <option value="youtube">YouTube</option>
+              <option value="local">Local</option>
+              <option value="note">note</option>
+            </select>
+          </div>
+          <button id="addBtn">＋ 追加</button>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>名称</th>
+                <th>媒体</th>
+                <th>区分</th>
+                <th>用途</th>
+                <th>Provider</th>
+                <th>上限</th>
+              </tr>
+            </thead>
+            <tbody id="sourceRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="editorPane">
+        <form id="sourceForm">
+          <div class="editorHead">
+            <h2>監視対象</h2>
+            <button type="button" id="deleteBtn" class="danger">削除</button>
+          </div>
+
+          <label>名称<input name="name" /></label>
+          <div class="grid2">
+            <label>Provider
+              <select name="provider">
+                <option value="hermes_x">hermes_x</option>
+                <option value="youtube">youtube</option>
+                <option value="local_file">local_file</option>
+                <option value="json">json</option>
+              </select>
+            </label>
+            <label>媒体
+              <select name="platform">
+                <option value="x">x</option>
+                <option value="youtube">youtube</option>
+                <option value="local">local</option>
+                <option value="note">note</option>
+                <option value="website">website</option>
+              </select>
+            </label>
+          </div>
+
+          <label>ソース<input name="source" placeholder="@account / channel / book title" /></label>
+          <label>URL<input name="url" placeholder="https://..." /></label>
+          <label>ファイルパス<input name="file" placeholder="/Users/.../file.docx" /></label>
+
+          <div class="grid2">
+            <label>Entity<input name="entity" placeholder="nakano-yusaku" /></label>
+            <label>Profile
+              <select name="profile">
+                <option value="personal">personal</option>
+                <option value="company">company</option>
+                <option value="unknown">unknown</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="grid3">
+            <label>用途
+              <select name="purpose">
+                <option value="style">style</option>
+                <option value="research">research</option>
+                <option value="creative">creative</option>
+                <option value="sales">sales</option>
+                <option value="general">general</option>
+              </select>
+            </label>
+            <label>Kind<input name="kind" placeholder="post / video / book" /></label>
+            <label>Limit<input name="limit" type="number" min="1" /></label>
+          </div>
+
+          <label>タイトル<input name="title" /></label>
+        </form>
+
+        <section class="manualBox">
+          <h2>手動取り込み</h2>
+          <div class="grid2">
+            <input id="manualFile" placeholder="/Users/.../memo.md or .docx" />
+            <button id="ingestFileBtn">取り込み</button>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <section class="studioPane">
+      <div class="studioHeader">
+        <div>
+          <h2>制作スタジオ</h2>
+          <p>制作物を保存し、中野優作仕様へブラッシュアップ</p>
+        </div>
+        <div class="studioActions">
+          <button id="saveArtifactBtn" class="primary">制作物を保存</button>
+          <button id="applyRevisionBtn">改善案を本文へ</button>
+        </div>
+      </div>
+
+      <div class="studioGrid">
+        <section class="draftPane">
+          <div class="grid3">
+            <label>タイトル<input id="artifactTitle" placeholder="制作物タイトル" /></label>
+            <label>種類
+              <select id="artifactKind">
+                <option value="post">X投稿</option>
+                <option value="script">YouTube台本</option>
+                <option value="article">記事</option>
+                <option value="slide">スライド</option>
+                <option value="image_prompt">画像プロンプト</option>
+                <option value="draft">その他</option>
+              </select>
+            </label>
+            <label>用途
+              <select id="artifactPurpose">
+                <option value="creative">creative</option>
+                <option value="style">style</option>
+                <option value="research">research</option>
+                <option value="sales">sales</option>
+              </select>
+            </label>
+          </div>
+          <textarea id="artifactText" placeholder="ここに制作物の下書きを貼り付け"></textarea>
+        </section>
+
+        <section class="chatPane">
+          <div id="chatMessages" class="chatMessages">
+            <div class="botBubble">下書きを貼って「もっと熱量を」「X向けに短く」「会社公式寄りに」などと送ってください。</div>
+          </div>
+          <div class="chatComposer">
+            <input id="chatInput" placeholder="中野優作仕様にブラッシュアップして" />
+            <button id="sendChatBtn">送信</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="logPane">
+      <div class="logHead">
+        <h2>実行ログ</h2>
+        <button id="clearLogBtn">クリア</button>
+      </div>
+      <pre id="logOutput"></pre>
+    </section>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

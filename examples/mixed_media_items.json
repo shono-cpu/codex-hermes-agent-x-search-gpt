@@ -1,0 +1,49 @@
+[
+  {
+    "id": "yt-001",
+    "platform": "youtube",
+    "kind": "video",
+    "entity": "sample-company",
+    "profile": "company",
+    "purpose": "creative",
+    "source": "Sample AI Channel",
+    "title": "CodexとHermes AgentでX検索を制作フローに入れる",
+    "url": "https://www.youtube.com/watch?v=example001",
+    "published_at": "2026-05-18T12:30:00+09:00",
+    "description": "CodexからHermes Agentを呼び出し、X検索で取った直近ポストを要約、ナレッジ化、制作プロンプト化する流れを解説。月額サブスク内で試せる実用ワークフローとして紹介する。",
+    "metrics": {
+      "views": 12400,
+      "likes": 620
+    },
+    "tags": ["Codex", "Hermes Agent", "X検索", "AI制作"]
+  },
+  {
+    "id": "article-001",
+    "platform": "note",
+    "kind": "article",
+    "entity": "sample-company",
+    "profile": "company",
+    "purpose": "research",
+    "source": "Sample AI Channel",
+    "title": "AI検索をナレッジストックに変える",
+    "url": "https://note.com/sample/n/example001",
+    "published_at": "2026-05-18T13:00:00+09:00",
+    "body": "指定アカウントの投稿を自動取得し、要点、文体、言い回しをストックする。記事やスライド、画像生成プロンプトに展開できる状態にしておくと、制作前の調査と構成作りがかなり短縮される。"
+  },
+  {
+    "id": "asset-001",
+    "platform": "local",
+    "kind": "image_prompt",
+    "entity": "sample-company",
+    "profile": "company",
+    "purpose": "creative",
+    "source": "Sample AI Channel",
+    "title": "Hermes x Codex infographic prompt",
+    "created_at": "2026-05-18T14:10:00+09:00",
+    "prompt": "Create a clean Japanese infographic showing: 直近ポスト取得 → 要約 → ナレッジ化 → 制作プロンプト化 → 画像生成。熱量はあるが実用的で、価格感と使い道がすぐ分かる構成にする。",
+    "metadata": {
+      "model": "GPT-Image",
+      "status": "draft"
+    }
+  }
+]

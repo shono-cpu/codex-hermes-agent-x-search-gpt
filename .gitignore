@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+.python-version
+
+# Local DB / generated artifacts
+data/*.db
+data/*.sqlite*
+knowledge/
+outputs/
+
+# Local secrets/config overrides
+accounts.toml

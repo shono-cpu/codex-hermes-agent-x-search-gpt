@@ -1,0 +1,12 @@
+[llm]
+provider = "openai"
+quality_mode = "max"
+model = "gpt-5.5"
+fallback_model = "gpt-5.2-pro"
+reasoning_effort = "xhigh"
+max_output_tokens = 6000
+
+[image]
+provider = "openai"
+model = "gpt-image-1.5"
+quality = "high"
