@@ -243,16 +243,20 @@ def crawl_from_config(config_path: Path, store: KnowledgeStore) -> int:
             total_skipped += skipped
         elif provider == "local_file":
             file_path = Path(str(source["file"]))
-            content = load_content_from_file(
-                file_path,
-                source=str(source.get("source") or source.get("name") or file_path.stem),
-                platform=optional_str(source.get("platform")) or "local",
-                kind=optional_str(source.get("kind")) or "artifact",
-                entity=optional_str(source.get("entity")),
-                profile=optional_str(source.get("profile")),
-                purpose=optional_str(source.get("purpose")),
-                title=optional_str(source.get("title")),
-            )
+            try:
+                content = load_content_from_file(
+                    file_path,
+                    source=str(source.get("source") or source.get("name") or file_path.stem),
+                    platform=optional_str(source.get("platform")) or "local",
+                    kind=optional_str(source.get("kind")) or "artifact",
+                    entity=optional_str(source.get("entity")),
+                    profile=optional_str(source.get("profile")),
+                    purpose=optional_str(source.get("purpose")),
+                    title=optional_str(source.get("title")),
+                )
+            except (FileNotFoundError, ValueError) as exc:
+                unavailable.append(f"{source.get('name') or source.get('source') or file_path} (local_file): {exc}")
+                continue
             inserted, updated, skipped = store.upsert_contents([content])
             total_inserted += inserted
             total_updated += updated
