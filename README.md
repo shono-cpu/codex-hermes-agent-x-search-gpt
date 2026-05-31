@@ -60,6 +60,53 @@ python3 -m x_knowledge crawl --config sources.example.toml
 
 このローカルMVPでは `provider = "json"` の取り込みまで動きます。`provider = "hermes_x"` や `provider = "youtube"` は、実際のHermes Agent / YouTube取得口が見えたらプロバイダを実装するための予約枠です。
 
+## TheNeutral-Agents運用（TEN-Agentsと分離）
+
+TEN-Agentsとは完全に別のデータベースで運用する前提で、runnerPCの定期ジョブからこのリポを回します。
+
+- 専用SQLite: `data/the-neutral-agents.sqlite`（デフォルト）
+- ジョブ: `./scripts/run-nakano-monitor.sh`
+
+DBパスを変える場合:
+
+```bash
+THE_NEUTRAL_AGENTS_DB_PATH=data/the-neutral-agents.sqlite ./scripts/run-nakano-monitor.sh
+```
+
+## LINEグループのナレッジ格納 + 定期通知（TEN-Agents構造風）
+
+LINEは「Webhook受信ワーカー（クラウド常駐）」と「runnerPCの定期sync」を分けます。
+
+### 1) Webhook受信ワーカー（Vercel想定）
+
+- `the-neutral-agents-line-worker/` を別アプリとしてデプロイ
+- `POST /api/line/webhook` でLINE webhookを受けて保存（デフォルトはSupabase）
+- `GET /api/line/export?since=...&limit=...&token=...` でrunnerPCがpullしてローカルDBへ取り込み
+
+必要なenv（ワーカー側）:
+
+- `LINE_CHANNEL_SECRET`
+- `LINE_EXPORT_TOKEN`（`export` を外部公開しないためのトークン）
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+Supabaseのテーブルは `the-neutral-agents-line-worker/supabase.sql` を適用します。
+
+### 2) runnerPC（pull取り込み + 通知）
+
+runnerPC側は `scripts/run-nakano-monitor.sh` が以下を自動で実行します。
+
+- `x_knowledge line-sync`（`LINE_WORKER_ENDPOINT` があれば）
+- `crawl` → `export`
+- `notify-line`（`LINE_NOTIFY_TO` と `LINE_CHANNEL_ACCESS_TOKEN` があれば）
+
+runnerPCのenv例:
+
+- `LINE_WORKER_ENDPOINT=https://<your-worker>.vercel.app`
+- `LINE_EXPORT_TOKEN=...`
+- `LINE_NOTIFY_TO=<groupId>`
+- `LINE_CHANNEL_ACCESS_TOKEN=...`
+
 ## Bot UI
 
 監視対象の編集・保存、クロール実行、用途別エクスポート、手動ファイル取り込みはローカルUIから操作できます。

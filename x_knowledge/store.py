@@ -47,6 +47,12 @@ CREATE TABLE IF NOT EXISTS posts (
 
 CREATE INDEX IF NOT EXISTS idx_posts_account_created
 ON posts(account, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS sync_state (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 """
 
 
@@ -65,6 +71,24 @@ class KnowledgeStore:
             conn.executescript(SCHEMA)
             migrate_contents_schema(conn)
             migrate_legacy_posts(conn)
+
+    def get_state(self, key: str) -> str | None:
+        self.init()
+        with self.connect() as conn:
+            row = conn.execute("SELECT value FROM sync_state WHERE key = ?", (key,)).fetchone()
+        return row["value"] if row else None
+
+    def set_state(self, key: str, value: str) -> None:
+        self.init()
+        with self.connect() as conn:
+            conn.execute(
+                """
+                INSERT INTO sync_state(key, value, updated_at)
+                VALUES(?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+                """,
+                (key, value),
+            )
 
     def upsert_contents(self, contents: list[ContentInput]) -> tuple[int, int, int]:
         self.init()

@@ -1,15 +1,22 @@
 from __future__ import annotations
 
 import argparse
+import json
 import tomllib
 from pathlib import Path
+from urllib.request import Request, urlopen
+from urllib.parse import urlencode
 
 from .analysis import build_report
 from .exporter import export_routed_markdown
 from .providers.json_file import load_contents_from_json
 from .providers.local_file import load_content_from_file
 from .render import render_creative_prompt, render_markdown_report
+from .models import ContentInput
 from .store import DEFAULT_DB, KnowledgeStore, normalize_source
+
+
+LINE_STATE_KEY_DEFAULT = "line_export_last_received_at"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -62,6 +69,22 @@ def main(argv: list[str] | None = None) -> int:
 
     crawl = sub.add_parser("crawl", help="Run configured crawlers when providers are available")
     crawl.add_argument("--config", type=Path, default=Path("sources.example.toml"), help="Crawler config TOML")
+
+    line_sync = sub.add_parser("line-sync", help="Sync LINE messages from the LINE worker export endpoint")
+    line_sync.add_argument("--endpoint", required=True, help="Worker base URL, e.g. https://xxx.vercel.app")
+    line_sync.add_argument("--token", help="Export token (optional). If set, sent as query param token=...")
+    line_sync.add_argument("--limit", type=int, default=500, help="Max items to fetch in one run")
+    line_sync.add_argument(
+        "--state-key",
+        default=LINE_STATE_KEY_DEFAULT,
+        help="sync_state key used to store last_received_at cursor",
+    )
+
+    notify = sub.add_parser("notify-line", help="Send a LINE push message for job notifications")
+    notify.add_argument("--to", required=True, help="Target groupId/roomId/userId")
+    notify.add_argument("--access-token", help="LINE channel access token. Defaults to env LINE_CHANNEL_ACCESS_TOKEN.")
+    notify.add_argument("--message", help="Text message to send")
+    notify.add_argument("--file", type=Path, help="Read message body from file")
 
     ui = sub.add_parser("ui", help="Start the local 中野優作bot management UI")
     ui.add_argument("--host", default="127.0.0.1", help="UI host")
@@ -155,6 +178,42 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "crawl":
         return crawl_from_config(args.config, store)
+
+    if args.command == "line-sync":
+        since = store.get_state(args.state_key)
+        base = args.endpoint.rstrip("/")
+        query = {"limit": str(args.limit)}
+        if since:
+            query["since"] = since
+        if args.token:
+            query["token"] = args.token
+        url = f"{base}/api/line/export?{urlencode(query)}"
+        req = Request(url, headers={"Accept": "application/json"})
+        with urlopen(req, timeout=30) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+        items = payload.get("items") or []
+        last_received_at = payload.get("last_received_at")
+        contents = [content_from_dict(item) for item in items if isinstance(item, dict)]
+        inserted, updated, skipped = store.upsert_contents(contents) if contents else (0, 0, 0)
+        if last_received_at:
+            store.set_state(args.state_key, str(last_received_at))
+        print(f"LINE sync imported {inserted}, updated {updated}, skipped {skipped}")
+        print(f"LINE sync fetched {len(contents)} items; cursor={last_received_at or since or 'none'}")
+        return 0
+
+    if args.command == "notify-line":
+        access_token = args.access_token or __import__("os").environ.get("LINE_CHANNEL_ACCESS_TOKEN")
+        if not access_token:
+            raise SystemExit("Missing LINE channel access token. Use --access-token or env LINE_CHANNEL_ACCESS_TOKEN.")
+        if args.file:
+            message = args.file.read_text(encoding="utf-8").strip()
+        else:
+            message = (args.message or "").strip()
+        if not message:
+            raise SystemExit("Message is empty. Use --message or --file.")
+        send_line_push_message(access_token=access_token, to=args.to, message=message)
+        print("Sent LINE notification")
+        return 0
 
     if args.command == "ui":
         from .ui_server import run_ui
@@ -277,6 +336,48 @@ def crawl_from_config(config_path: Path, store: KnowledgeStore) -> int:
 
 def optional_str(value: object) -> str | None:
     return value if isinstance(value, str) and value.strip() else None
+
+def id_str(value: object) -> str | None:
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    return None
+
+
+def content_from_dict(item: dict[str, object]) -> ContentInput:
+    source = id_str(item.get("source")) or "unknown"
+    text = id_str(item.get("text")) or ""
+    return ContentInput(
+        source=source,
+        text=text,
+        platform=id_str(item.get("platform")) or "unknown",
+        kind=id_str(item.get("kind")) or "artifact",
+        entity=id_str(item.get("entity")),
+        profile=id_str(item.get("profile")) or "unknown",
+        purpose=id_str(item.get("purpose")) or "general",
+        title=id_str(item.get("title")),
+        content_id=id_str(item.get("id")) or id_str(item.get("content_id")),
+        canonical_key=id_str(item.get("canonical_key")),
+        url=id_str(item.get("url")),
+        created_at=id_str(item.get("created_at")),
+        metadata=item.get("metadata") if isinstance(item.get("metadata"), dict) else {},
+    )
+
+
+def send_line_push_message(*, access_token: str, to: str, message: str) -> None:
+    payload = {"to": to, "messages": [{"type": "text", "text": message}]}
+    data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    req = Request(
+        "https://api.line.me/v2/bot/message/push",
+        data=data,
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json; charset=utf-8",
+        },
+        method="POST",
+    )
+    with urlopen(req, timeout=30) as resp:
+        if resp.status >= 400:
+            raise RuntimeError(f"LINE push failed: HTTP {resp.status}")
 
 
 if __name__ == "__main__":
