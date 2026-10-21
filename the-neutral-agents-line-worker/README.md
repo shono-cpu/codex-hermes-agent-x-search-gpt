@@ -29,3 +29,7 @@ Apply `supabase.sql` to your Supabase project (SQL editor).
 - `POST /api/line/webhook`
 - `GET /api/line/export?since=<ISO8601>&limit=500` (requires `SUPABASE_*`)
 
+
+## Node.js
+
+Node.js 24.22.1以上の24系を使用します（2026-10-21セキュリティ更新）。Vercelは24.xを指定し、パッチはプラットフォームが提供する版を使用します。
